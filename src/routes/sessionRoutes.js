@@ -31,6 +31,27 @@ router.post('/sessions', async (req, res) => {
   }
 });
 
+router.put('/sessions/:id', async (req, res) => {
+  const { id } = req.params;
+  const { duration, feedback } = req.body;
+
+  try {
+    const session = await Session.findById(id);
+    if (!session) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+
+    session.duration = duration;
+    session.feedback = feedback;
+
+    await session.save();
+
+    res.json(session);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+});
+
 router.delete('/sessions/:id', async (req, res) => {
   const { id } = req.params;
   try {
